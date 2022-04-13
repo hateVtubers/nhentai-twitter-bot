@@ -1,9 +1,9 @@
 // @ts-check
-import { tweetImage, tweetStream } from './lib/twitter.js'
+import { setTimeout } from 'timers/promises'
+import { tweetImage } from './lib/twitter.js'
 
 const main = async () => {
-  await tweetImage()
-  await tweetStream()
+  await setTimeout(300000, tweetImage)
 
   await main()
 }
