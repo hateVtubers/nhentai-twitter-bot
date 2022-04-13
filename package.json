@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node ./src/index.js",
-    "dev": "npx nodemon ./src/index.js"
+    "dev": "npx nodemon ./src/index.js",
+    "build": "git push heroku main",
+    "heroku": "heroku logs"
   },
   "keywords": [],
   "author": "",
