@@ -61,4 +61,6 @@ export const tweetStream = async () => {
       })
     }
   })
+
+  setTimeout(stream.close(), 500000)
 }
