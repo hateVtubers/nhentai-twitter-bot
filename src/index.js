@@ -4,8 +4,8 @@ import { tweetImage, tweetStream } from './lib/twitter.js'
 const main = async () => {
   await tweetImage()
   await tweetStream()
+
+  await main()
 }
 
-while (true) {
-  setTimeout(main, 600000)
-}
+main()
