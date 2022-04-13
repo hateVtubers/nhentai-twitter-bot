@@ -6,6 +6,4 @@ const main = async () => {
   await tweetStream()
 }
 
-while (true) {
-  setTimeout(main, 60000)
-}
+setTimeout(main, 600000)
