@@ -1,48 +1,49 @@
 // @ts-check
 import { API } from 'nhentai'
-import axios from 'axios'
 
 const api = new API()
 
-export const getDoujinBuffer = async () => {
-  const random = await api.randomDoujinID()
-  const doujin = await api
-    .fetchDoujin(random)
-    .then(({ pages, id, titles }) => ({
-      page: pages.at(0).url,
-      type: pages.at(0).extension,
+const getRandomNumber = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+export const getDoujinRecursive = async () => {
+  const id = getRandomNumber(1, 1000000)
+
+  if (await api.doujinExists(id)) {
+    const { pages, titles, id } = await api.randomDoujin()
+    const buffer = await pages.at(0)?.fetch()
+    const extension = pages.at(0)?.extension
+
+    return {
+      buffer,
+      extension,
       titles,
       id,
-    }))
+    }
+  } else {
+    const doujin = await getDoujinRecursive()
 
-  /**
-   * @type {{data: Buffer}}
-   */
-  const { data } = await axios(doujin.page, {
-    responseType: 'arraybuffer',
-  })
-
-  return {
-    buffer: data,
-    ...doujin,
+    return { ...doujin }
   }
 }
 
-export const findDoujin = async (id) => {
-  if (!(await api.doujinExists(id))) return { content: `doujin #${id} does not exist` }
+export const getDoujin = async () => {
+  try {
+    const { pages, titles, id } = await api.randomDoujin()
+    const buffer = await pages.at(0)?.fetch()
+    const extension = pages.at(0)?.extension
 
-  const doujin = await api.fetchDoujin(id).then(({ pages, titles }) => ({
-    titles,
-    page: pages.at(0).url,
-    type: pages.at(0).extension,
-  }))
-
-  const { data } = await axios(doujin.page, {
-    responseType: 'arraybuffer',
-  })
-
-  return {
-    buffer: data,
-    ...doujin,
+    return {
+      buffer,
+      extension,
+      titles,
+      id,
+    }
+  } catch (error) {
+    return getDoujinRecursive
   }
 }
+
+/* console.log(await getDoujinRecursive()) */
+/* console.log(await getDoujin()) */

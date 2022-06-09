@@ -1,12 +1,8 @@
 // @ts-check
-import { setTimeout } from 'timers/promises'
-import { tweetImage } from './lib/twitter.js'
+import { tweetDoujin } from './lib/twitter.js'
 
-const main = async () => {
-  await setTimeout(1800000, tweetImage())
-  console.log('tweet')
-
-  await main()
+const main = () => {
+  setInterval(tweetDoujin, 60000)
 }
 
 main()
