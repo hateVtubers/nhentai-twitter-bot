@@ -33,4 +33,4 @@ export const tweetDoujin = async () => {
   await getTweet({ ...doujin })
 }
 
-await tweetDoujin()
+// await tweetDoujin()
