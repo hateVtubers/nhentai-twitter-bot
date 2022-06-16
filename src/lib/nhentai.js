@@ -1,4 +1,3 @@
-// @ts-check
 import { API } from 'nhentai'
 
 const api = new API()
@@ -41,7 +40,7 @@ export const getDoujin = async () => {
       id,
     }
   } catch (error) {
-    return getDoujinRecursive
+    return await getDoujinRecursive()
   }
 }
 

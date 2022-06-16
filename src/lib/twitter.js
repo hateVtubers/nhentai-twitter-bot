@@ -1,5 +1,5 @@
 import { TwitterApi } from 'twitter-api-v2'
-import { getDoujin, getDoujinRecursive } from '../lib/nhentai.js'
+import { getDoujin } from '../lib/nhentai.js'
 import 'dotenv/config'
 
 const client = new TwitterApi({
@@ -10,32 +10,27 @@ const client = new TwitterApi({
 })
 
 const getTweet = async ({ buffer, extension, titles, id }) => {
-  const media_ids = await client.v1.uploadMedia(buffer, {
+  const media = await client.v1.uploadMedia(buffer, {
     mimeType: extension,
   })
 
-  const { created_at } = await client.v1.tweet(
-    `${titles.pretty ?? titles.english ?? titles.japanese} - [#${id}]\n`,
-    {
-      media_ids,
-    }
-  )
+  const { data } = await client.v2.tweet({
+    text: `${titles.pretty ?? titles.english ?? titles.japanese} - [#${id}]`,
+    media: {
+      media_ids: [media],
+    },
+  })
 
   console.log({
-    created_at,
-    titles,
-    id,
+    createdAt: new Date(),
+    ...data,
   })
 }
 
 export const tweetDoujin = async () => {
-  try {
-    const { buffer, extension, id, titles } = await getDoujin()
+  const doujin = await getDoujin()
 
-    await getTweet({ buffer, extension, id, titles })
-  } catch (error) {
-    const { buffer, extension, id, titles } = await getDoujinRecursive()
-
-    await getTweet({ buffer, extension, id, titles })
-  }
+  await getTweet({ ...doujin })
 }
+
+await tweetDoujin()
